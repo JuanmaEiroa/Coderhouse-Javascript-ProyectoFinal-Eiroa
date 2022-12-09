@@ -1,12 +1,19 @@
 //MENU - TABLA DE PRECIOS
-let alitas = 900;
-let pechuga = 1200;
-let hamburg = 1500;
-let papas = 500;
-let arosCebolla = 650;
-let agua = 300;
-let gaseosa = 500;
-let cerveza = 600;
+class Producto {
+  constructor(nombre, precio){
+    this.nombre = nombre,
+    this.precio = precio;
+  }
+}
+
+let alitas = new Producto("Alitas de Pollo", 900);
+let pechuga = new Producto("Pechuga de Pollo", 1200);
+let hamburg = new Producto("Hamburguesa de Pollo", 1500);
+let papas = new Producto("Papas Fritas", 500);
+let arosCebolla = new Producto("Aros de Cebolla", 650);
+let agua = new Producto("Agua Mineral", 300);
+let gaseosa = new Producto("Gaseosa", 500);
+let cerveza = new Producto("Porrón de Cerveza", 600);
 
 //TOTAL
 let totalPedido = 0;
@@ -23,13 +30,13 @@ do {
   ).toUpperCase();
   switch (platoPrincipal) {
     case "ALI":
-      totalPedido = totalPedido + alitas;
+      totalPedido = totalPedido + alitas.precio;
       break;
     case "PECH":
-      totalPedido = totalPedido + pechuga;
+      totalPedido = totalPedido + pechuga.precio;
       break;
     case "HAMB":
-      totalPedido = totalPedido + hamburg;
+      totalPedido = totalPedido + hamburg.precio;
       break;
     default:
       alert(
@@ -56,10 +63,10 @@ do {
   ).toUpperCase();
   switch (acompanamiento) {
     case "PAPAS":
-      totalPedido = totalPedido + papas;
+      totalPedido = totalPedido + papas.precio;
       break;
     case "AROS":
-      totalPedido = totalPedido + arosCebolla;
+      totalPedido = totalPedido + arosCebolla.precio;
       break;
     case "SIN":
       totalPedido = totalPedido + 0;
@@ -89,13 +96,13 @@ do {
   ).toUpperCase();
   switch (bebida) {
     case "AGUA":
-      totalPedido = totalPedido + agua;
+      totalPedido = totalPedido + agua.precio;
       break;
     case "GASEO":
-      totalPedido = totalPedido + gaseosa;
+      totalPedido = totalPedido + gaseosa.precio;
       break;
     case "CERV":
-      totalPedido = totalPedido + cerveza;
+      totalPedido = totalPedido + cerveza.precio;
       break;
     case "SIN":
       totalPedido = totalPedido + 0;
