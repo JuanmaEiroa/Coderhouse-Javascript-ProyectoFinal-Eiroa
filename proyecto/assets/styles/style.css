@@ -17,6 +17,14 @@ h1 {
   font-weight: 400;
 }
 
+/*INICIO CSS HEADER*/
+.banner{
+  padding: 2,5% 0%;
+}
+
+
+/*INICIO CSS NAV*/
+
 nav{
     display: flex;
     flex-flow: row nowrap;
@@ -26,8 +34,6 @@ nav{
     background-color: #c4182f;
 }
 
-.navbar ul {
-}
 
 .navbar ul li {
     list-style-type: none;

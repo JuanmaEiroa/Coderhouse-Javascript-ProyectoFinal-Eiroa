@@ -18,7 +18,7 @@ let totalPedido;
 
 let confirmation; //CREACIÓN DE VARIABLE CONFIRMATION PARA FIN DEL BUCLE
 
-//INICIO BUCLE DO WHILE PARA CONFIRMACIÓN DE PEDIDO
+//INICIO BUCLE DO WHILE PARA CONFIRMACIÓN DE PEDIDO AL FINAL DEL MISMO
 do {
   //RESUMEN DE PEDIDO
   totalPedido = 0;
@@ -187,6 +187,7 @@ alert(
 let paymentOpt = ["efe", "transf", "tarj"];
 let valorDescuento;
 let metodoPago;
+/*
 function calcDescuento() {
   do {
     metodoPago = prompt(
@@ -197,6 +198,26 @@ function calcDescuento() {
     } else if (metodoPago === paymentOpt[1]) {
       valorDescuento = 5;
     } else if (metodoPago === paymentOpt[2]) {
+      valorDescuento = 0;
+    } else {
+      alert("El método de pago elegido no es válido. Intente nuevamente.");
+    }
+  } while (paymentOpt.includes(metodoPago) === false);
+  totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
+}
+*/
+
+function calcDescuento() {
+  do {
+    metodoPago = prompt(
+      "Elija el método de pago:\n\t•(EFE) - Efectivo\n\t•(TRANSF) - Transferencia\n\t•(TARJ) - Tarjeta de crédito/débito"
+    ).toLowerCase();
+    let paymentSearch = paymentOpt.find((option) => option === metodoPago);
+    if (paymentSearch === "efe") {
+      valorDescuento = 10;
+    } else if (paymentSearch === "transf") {
+      valorDescuento = 5;
+    } else if (paymentSearch === "tarj") {
       valorDescuento = 0;
     } else {
       alert("El método de pago elegido no es válido. Intente nuevamente.");
