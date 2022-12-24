@@ -1,6 +1,8 @@
-//CREACIÓN DE VARIABLES PARA PEDIDO Y TOTAL
+//CREACIÓN DE VARIABLES PARA PEDIDO Y TOTAL, CON ALMACENAMIENTO EN STORAGE
 let pedidoFinal = [];
 let totalPedido = 0;
+let pedidoFinalJSON;
+let totalPedidoJSON;
 
 //DECLARACIÓN DE FUNCIÓN PARA AGREGAR ITEM A PEDIDO
 function addToPedido(menuType, id) {
@@ -8,6 +10,10 @@ function addToPedido(menuType, id) {
   pedidoFinal.push(menuSearch.nombre);
   totalPedido += menuSearch.precio;
   alert("El producto se agregó a su pedido!");
+  pedidoFinalJSON = JSON.stringify(pedidoFinal);
+  totalPedidoJSON = JSON.stringify(totalPedido);
+  sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
+  sessionStorage.setItem("totalPedido", totalPedidoJSON);
 }
 
 //DECLARACIÓN Y LLAMADO DE FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
@@ -19,12 +25,15 @@ function createCardsPlatoPrincipal() {
     <div class="col-12 text-center">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
+          <h4 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
           <img class="menuItem card-img img-fluid" src=${element.img}>
+          <br>
+          <br>
           <button type="button" class="btn btn-danger" id="add${element.id}">Añadir a mi pedido</button>
         </div>
       </div>
     </div>
+    <br>
     `;
     menuCards[0].appendChild(menuItemCard);
     let addItemButton = document.getElementById("add" + element.id);
@@ -42,12 +51,15 @@ function createCardsAcompanamiento() {
       <div class="col-12 text-center">
         <div class="card text-center">
           <div class="card-body">
-            <h5 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
+            <h4 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
             <img class="menuItem card-img img-fluid" src=${element.img}>
+            <br>
+            <br>
             <button type="button" class="btn btn-danger" id="add${element.id}">Añadir a mi pedido</button>
           </div>
         </div>
       </div>
+      <br>
       `;
     menuCards[0].appendChild(menuItemCard);
     let addItemButton = document.getElementById("add" + element.id);
@@ -65,12 +77,15 @@ function createCardsBebidas() {
       <div class="col-12 text-center">
         <div class="card text-center">
           <div class="card-body">
-            <h5 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
+            <h4 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
             <img class="menuItem card-img img-fluid" src=${element.img}>
+            <br>
+            <br>
             <button type="button" class="btn btn-danger" id="add${element.id}">Añadir a mi pedido</button>
           </div>
         </div>
       </div>
+      <br>
       `;
     menuCards[0].appendChild(menuItemCard);
     let addItemButton = document.getElementById("add" + element.id);
@@ -86,6 +101,8 @@ createCardsBebidas();
 
 //CREACIÓN DE BOTÓN Y FUNCIÓN PARA VER PEDIDO ACTUAL
 function showPedido() {
+  pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
+  totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
   if (pedidoFinal.length > 0) {
     alert(
       "Su pedido actual es:\n" +
@@ -105,12 +122,19 @@ buttonVerPedido.addEventListener("click", function () {
 
 //CREACIÓN DE BOTÓN PARA LIMPIAR PEDIDO ACTUAL
 function clearPedido() {
+  pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
+  totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
   if (pedidoFinal.length > 0) {
     pedidoFinal.splice(0, pedidoFinal.length);
+    totalPedido = 0;
     alert("Su pedido ha sido vaciado");
   } else {
     alert("Su pedido aún no contiene ningún producto");
   }
+  pedidoFinalJSON = JSON.stringify(pedidoFinal);
+  totalPedidoJSON = JSON.stringify(totalPedido);
+  sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
+  sessionStorage.setItem("totalPedido", totalPedidoJSON);
 }
 
 let buttonClearPedido = document.getElementById("buttonClearPedido");
@@ -120,16 +144,17 @@ buttonClearPedido.addEventListener("click", function () {
 
 //CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL
 function confirmPedido() {
+  pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
   if (pedidoFinal.length > 0) {
     alert(
-      "Su pedido ha sido confirmado. Elija su método de pago a continuación. El pago en efectivo tendrá un 10% de descuento en su pedido final. El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
+      "Su pedido ha sido confirmado. Elija su método de pago a continuación.\nEl pago en efectivo tendrá un 10% de descuento en su pedido final.\nEl pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
     );
-    
+
     //MÉTODO DE PAGO y DESCUENTO
     let paymentOpt = ["efe", "transf", "tarj"];
     let valorDescuento;
     let metodoPago;
-    
+
     function calcDescuento() {
       do {
         metodoPago = prompt(
@@ -146,21 +171,23 @@ function confirmPedido() {
           alert("El método de pago elegido no es válido. Intente nuevamente.");
         }
       } while (paymentOpt.includes(metodoPago) === false);
-      totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
+      totalPedido = parseFloat(
+        totalPedido * (1 - valorDescuento / 100)
+      ).toFixed(2);
     }
-    
+
     calcDescuento();
-    
+
     console.log(
-      "El precio total del pedido con el descuento es de: " + totalPedido.toString()
+      "El precio total del pedido con el descuento es de: " +
+        totalPedido.toString()
     );
-    
+
     alert(
       "El precio total de su pedido es de $" +
         totalPedido.toString() +
         ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
     );
-    
   } else {
     alert("Su pedido aún no contiene ningún producto");
   }

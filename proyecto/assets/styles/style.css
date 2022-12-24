@@ -50,6 +50,12 @@ nav {
 
 .navbar a {
   background-color: #c4182f;
+  color:#fbda06
+}
+
+.activePage {
+  text-decoration: underline;
+  font-weight: 600;
 }
 
 /*FIN CSS NAV*/
