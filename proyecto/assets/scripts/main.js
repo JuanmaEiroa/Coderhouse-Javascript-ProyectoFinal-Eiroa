@@ -44,22 +44,16 @@ alert(
 
 
 */
-/*
-let menuSearch;
-
-function addToPedido(id) {
-  if (id != null) {
-    menuSearch = menuPlatoPrincipal.find((element) => {
-      element.id == id;
-    });
-}
-alert("Su elemento " + menuSearch + " ha sido añadido");
-}
-*/
 
 let pedidoFinal = [];
 let totalPedido = 0;
 
+function addToPedido(menuType, id) {
+  let menuSearch = menuType.find((element) => element.id === id);
+  console.log(menuSearch.id);
+  pedidoFinal.push(menuSearch.nombre);
+  totalPedido += menuSearch.precio;
+}
 
 //FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
 function createCardsPlatoPrincipal(){
@@ -78,7 +72,7 @@ menuPlatoPrincipal.forEach((element) => {
     </div>
     `
     menuCards[0].appendChild(menuItemCard);
-    let addItemButton = document.getElementById("add");
+    let addItemButton = document.getElementById("add"+element.id);
     addItemButton.addEventListener("click", addToPedido(menuPlatoPrincipal, element.id));
   });
 }
@@ -93,14 +87,14 @@ function createCardsAcompanamiento(){
           <div class="card-body">
             <h5 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
             <img class="menuItem card-img img-fluid" src=${element.img}>
-            <button type="button" class="addItemButton btn btn-danger">Añadir a mi pedido</button>
+            <button type="button" class="btn btn-danger" id="add${element.id}">Añadir a mi pedido</button>
           </div>
         </div>
       </div>
       `
      menuCards[0].appendChild(menuItemCard);
-     let addItemButton = document.getElementsByClassName("addItemButton");
-     addItemButton.addEventListener("click", addToPedido(menuPlatoPrincipal, element.id));
+     let addItemButton = document.getElementById("add"+element.id);
+     addItemButton.addEventListener("click", addToPedido(menuAcompanamiento, element.id));
   });
 }
 
@@ -114,12 +108,14 @@ function createCardsBebidas(){
           <div class="card-body">
             <h5 class="card-title"><strong>${element.nombre} - $${element.precio}</strong></h5>
             <img class="menuItem card-img img-fluid" src=${element.img}>
-            <button onclick="addToPedido(${menuPlatoPrincipal},${element.id})" type="button" class="addItemButton btn btn-danger">Añadir a mi pedido</button>
+            <button type="button" class="btn btn-danger" id="add${element.id}">Añadir a mi pedido</button>
           </div>
         </div>
       </div>
       `
      menuCards[0].appendChild(menuItemCard);
+     let addItemButton = document.getElementById("add"+element.id);
+     addItemButton.addEventListener("click", addToPedido(menuBebidas, element.id));
   });
   }
 
@@ -127,13 +123,5 @@ createCardsPlatoPrincipal();
 createCardsAcompanamiento();
 createCardsBebidas();
 
-function addToPedido(menuType, id) {
-  let menuSearch = menuType.find((element) => element.id === id);
-  console.log(menuSearch.id);
-  pedidoFinal.push(menuSearch.nombre);
-  totalPedido += menuSearch.precio;
-}
-
-addToPedido(menuPlatoPrincipal, "ALI");
 console.log(pedidoFinal);
 console.log(totalPedido);
