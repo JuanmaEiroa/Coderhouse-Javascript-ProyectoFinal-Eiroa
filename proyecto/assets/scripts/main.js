@@ -50,9 +50,9 @@ let totalPedido = 0;
 
 function addToPedido(menuType, id) {
   let menuSearch = menuType.find((element) => element.id === id);
-  console.log(menuSearch.id);
   pedidoFinal.push(menuSearch.nombre);
   totalPedido += menuSearch.precio;
+  alert("El producto se agregó a su pedido!");
 }
 
 //FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
@@ -73,7 +73,7 @@ menuPlatoPrincipal.forEach((element) => {
     `
     menuCards[0].appendChild(menuItemCard);
     let addItemButton = document.getElementById("add"+element.id);
-    addItemButton.addEventListener("click", addToPedido(menuPlatoPrincipal, element.id));
+    addItemButton.addEventListener("click", function(){addToPedido(menuPlatoPrincipal, element.id)});
   });
 }
 
@@ -94,7 +94,7 @@ function createCardsAcompanamiento(){
       `
      menuCards[0].appendChild(menuItemCard);
      let addItemButton = document.getElementById("add"+element.id);
-     addItemButton.addEventListener("click", addToPedido(menuAcompanamiento, element.id));
+     addItemButton.addEventListener("click", function(){addToPedido(menuAcompanamiento, element.id)});
   });
 }
 
@@ -115,13 +115,10 @@ function createCardsBebidas(){
       `
      menuCards[0].appendChild(menuItemCard);
      let addItemButton = document.getElementById("add"+element.id);
-     addItemButton.addEventListener("click", addToPedido(menuBebidas, element.id));
+     addItemButton.addEventListener("click", function(){addToPedido(menuBebidas, element.id)});
   });
   }
 
 createCardsPlatoPrincipal();
 createCardsAcompanamiento();
 createCardsBebidas();
-
-console.log(pedidoFinal);
-console.log(totalPedido);
