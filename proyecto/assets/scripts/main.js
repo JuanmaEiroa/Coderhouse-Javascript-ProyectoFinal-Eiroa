@@ -1,53 +1,8 @@
-/*
-
-//MÉTODO DE PAGO y DESCUENTO
-alert(
-  "Elija su método de pago a continuación. El pago en efectivo tendrá un 10% de descuento en su pedido final. El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
-);
-
-let paymentOpt = ["efe", "transf", "tarj"];
-let valorDescuento;
-let metodoPago;
-
-function calcDescuento() {
-  do {
-    metodoPago = prompt(
-      "Elija el método de pago:\n\t•(EFE) - Efectivo\n\t•(TRANSF) - Transferencia\n\t•(TARJ) - Tarjeta de crédito/débito"
-    ).toLowerCase();
-    let paymentSearch = paymentOpt.find((option) => option === metodoPago);
-    if (paymentSearch === "efe") {
-      valorDescuento = 10;
-    } else if (paymentSearch === "transf") {
-      valorDescuento = 5;
-    } else if (paymentSearch === "tarj") {
-      valorDescuento = 0;
-    } else {
-      alert("El método de pago elegido no es válido. Intente nuevamente.");
-    }
-  } while (paymentOpt.includes(metodoPago) === false);
-  totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
-}
-
-calcDescuento();
-
-console.log(
-  "El precio total del pedido con el descuento es de: " + totalPedido.toString()
-);
-
-alert(
-  "El precio total de su pedido es de $" +
-    totalPedido.toString() +
-    ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
-);
-
-//Code by Juan Manuel Eiroa :)
-
-
-*/
-
+//CREACIÓN DE VARIABLES PARA PEDIDO Y TOTAL
 let pedidoFinal = [];
 let totalPedido = 0;
 
+//DECLARACIÓN DE FUNCIÓN PARA AGREGAR ITEM A PEDIDO
 function addToPedido(menuType, id) {
   let menuSearch = menuType.find((element) => element.id === id);
   pedidoFinal.push(menuSearch.nombre);
@@ -55,9 +10,9 @@ function addToPedido(menuType, id) {
   alert("El producto se agregó a su pedido!");
 }
 
-//FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
-function createCardsPlatoPrincipal(){
-menuPlatoPrincipal.forEach((element) => {
+//DECLARACIÓN Y LLAMADO DE FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
+function createCardsPlatoPrincipal() {
+  menuPlatoPrincipal.forEach((element) => {
     let menuCards = document.getElementsByClassName("platoPrincipal");
     let menuItemCard = document.createElement("div");
     menuItemCard.innerHTML = `
@@ -70,18 +25,20 @@ menuPlatoPrincipal.forEach((element) => {
         </div>
       </div>
     </div>
-    `
+    `;
     menuCards[0].appendChild(menuItemCard);
-    let addItemButton = document.getElementById("add"+element.id);
-    addItemButton.addEventListener("click", function(){addToPedido(menuPlatoPrincipal, element.id)});
+    let addItemButton = document.getElementById("add" + element.id);
+    addItemButton.addEventListener("click", function () {
+      addToPedido(menuPlatoPrincipal, element.id);
+    });
   });
 }
 
-function createCardsAcompanamiento(){
+function createCardsAcompanamiento() {
   menuAcompanamiento.forEach((element) => {
-      let menuCards = document.getElementsByClassName("acompanamiento");
-      let menuItemCard = document.createElement("div");
-      menuItemCard.innerHTML = `
+    let menuCards = document.getElementsByClassName("acompanamiento");
+    let menuItemCard = document.createElement("div");
+    menuItemCard.innerHTML = `
       <div class="col-12 text-center">
         <div class="card text-center">
           <div class="card-body">
@@ -91,18 +48,20 @@ function createCardsAcompanamiento(){
           </div>
         </div>
       </div>
-      `
-     menuCards[0].appendChild(menuItemCard);
-     let addItemButton = document.getElementById("add"+element.id);
-     addItemButton.addEventListener("click", function(){addToPedido(menuAcompanamiento, element.id)});
+      `;
+    menuCards[0].appendChild(menuItemCard);
+    let addItemButton = document.getElementById("add" + element.id);
+    addItemButton.addEventListener("click", function () {
+      addToPedido(menuAcompanamiento, element.id);
+    });
   });
 }
 
-function createCardsBebidas(){
+function createCardsBebidas() {
   menuBebidas.forEach((element) => {
-      let menuCards = document.getElementsByClassName("bebida");
-      let menuItemCard = document.createElement("span");
-      menuItemCard.innerHTML = `
+    let menuCards = document.getElementsByClassName("bebida");
+    let menuItemCard = document.createElement("span");
+    menuItemCard.innerHTML = `
       <div class="col-12 text-center">
         <div class="card text-center">
           <div class="card-body">
@@ -112,13 +71,104 @@ function createCardsBebidas(){
           </div>
         </div>
       </div>
-      `
-     menuCards[0].appendChild(menuItemCard);
-     let addItemButton = document.getElementById("add"+element.id);
-     addItemButton.addEventListener("click", function(){addToPedido(menuBebidas, element.id)});
+      `;
+    menuCards[0].appendChild(menuItemCard);
+    let addItemButton = document.getElementById("add" + element.id);
+    addItemButton.addEventListener("click", function () {
+      addToPedido(menuBebidas, element.id);
+    });
   });
-  }
+}
 
 createCardsPlatoPrincipal();
 createCardsAcompanamiento();
 createCardsBebidas();
+
+//CREACIÓN DE BOTÓN Y FUNCIÓN PARA VER PEDIDO ACTUAL
+function showPedido() {
+  if (pedidoFinal.length > 0) {
+    alert(
+      "Su pedido actual es:\n" +
+        pedidoFinal.join("\n") +
+        "\n\nEl costo final es de: $" +
+        totalPedido.toString()
+    );
+  } else {
+    alert("Su pedido aún no contiene ningún producto");
+  }
+}
+
+let buttonVerPedido = document.getElementById("buttonVerPedido");
+buttonVerPedido.addEventListener("click", function () {
+  showPedido();
+});
+
+//CREACIÓN DE BOTÓN PARA LIMPIAR PEDIDO ACTUAL
+function clearPedido() {
+  if (pedidoFinal.length > 0) {
+    pedidoFinal.splice(0, pedidoFinal.length);
+    alert("Su pedido ha sido vaciado");
+  } else {
+    alert("Su pedido aún no contiene ningún producto");
+  }
+}
+
+let buttonClearPedido = document.getElementById("buttonClearPedido");
+buttonClearPedido.addEventListener("click", function () {
+  clearPedido();
+});
+
+//CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL
+function confirmPedido() {
+  if (pedidoFinal.length > 0) {
+    alert(
+      "Su pedido ha sido confirmado. Elija su método de pago a continuación. El pago en efectivo tendrá un 10% de descuento en su pedido final. El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
+    );
+    
+    //MÉTODO DE PAGO y DESCUENTO
+    let paymentOpt = ["efe", "transf", "tarj"];
+    let valorDescuento;
+    let metodoPago;
+    
+    function calcDescuento() {
+      do {
+        metodoPago = prompt(
+          "Elija el método de pago:\n\t•(EFE) - Efectivo\n\t•(TRANSF) - Transferencia\n\t•(TARJ) - Tarjeta de crédito/débito"
+        ).toLowerCase();
+        let paymentSearch = paymentOpt.find((option) => option === metodoPago);
+        if (paymentSearch === "efe") {
+          valorDescuento = 10;
+        } else if (paymentSearch === "transf") {
+          valorDescuento = 5;
+        } else if (paymentSearch === "tarj") {
+          valorDescuento = 0;
+        } else {
+          alert("El método de pago elegido no es válido. Intente nuevamente.");
+        }
+      } while (paymentOpt.includes(metodoPago) === false);
+      totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
+    }
+    
+    calcDescuento();
+    
+    console.log(
+      "El precio total del pedido con el descuento es de: " + totalPedido.toString()
+    );
+    
+    alert(
+      "El precio total de su pedido es de $" +
+        totalPedido.toString() +
+        ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
+    );
+    
+  } else {
+    alert("Su pedido aún no contiene ningún producto");
+  }
+}
+
+let buttonConfirmPedido = document.getElementById("buttonConfirmPedido");
+buttonConfirmPedido.addEventListener("click", function () {
+  confirmPedido();
+});
+
+//Code by Juan Manuel Eiroa :)

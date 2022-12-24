@@ -74,11 +74,22 @@ nav {
 }
 
 .menuItem {
-  width: 80%;
+  width: 50%;
   text-align: center;
   border-radius: 10%;
+  height:50%;
 }
 
 .menuItem:hover{
-  transform: scale(1.05);
+  transform: scale(1.02);
+}
+
+/*FIN CSS MENU*/
+/*-----------------------------------------------*/
+/*INICIO CSS BOTONES PEDIDO*/
+
+.buttons button{
+  width: 70%;
+  margin: 1% 15%;
+  font-size: 150%;
 }
