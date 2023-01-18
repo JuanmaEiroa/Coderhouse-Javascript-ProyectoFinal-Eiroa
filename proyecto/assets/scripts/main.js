@@ -9,7 +9,12 @@ function addToPedido(menuType, id) {
   let menuSearch = menuType.find((element) => element.id === id);
   pedidoFinal.push(menuSearch.nombre);
   totalPedido += menuSearch.precio;
-  alert("El producto se agregó a su pedido!");
+  Toastify({
+    text: "El producto se agregó a tu pedido!",
+    style: {
+      background: "linear-gradient(to right, #c4182f, #a2182f)",
+    },
+  }).showToast();
   pedidoFinalJSON = JSON.stringify(pedidoFinal);
   totalPedidoJSON = JSON.stringify(totalPedido);
   sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
@@ -111,7 +116,13 @@ function showPedido() {
         totalPedido.toString()
     );
   } else {
-    alert("Su pedido aún no contiene ningún producto");
+    Swal.fire({
+      title: "Error!",
+      text: "Su pedido aún no contiene ningún producto",
+      icon: "error",
+      confirmButtonText: "Ok",
+      color: "black",
+    });
   }
 }
 
@@ -127,9 +138,22 @@ function clearPedido() {
   if (pedidoFinal.length > 0) {
     pedidoFinal.splice(0, pedidoFinal.length);
     totalPedido = 0;
-    alert("Su pedido ha sido vaciado");
+    Swal.fire({
+      title: "Pedido vaciado!",
+      text: "Su pedido ha sido vaciado",
+      icon: "success",
+      showConfirmButton: false,
+      color: "black",
+      timer: 2200,
+    });
   } else {
-    alert("Su pedido aún no contiene ningún producto");
+    Swal.fire({
+      title: "Error!",
+      text: "Su pedido aún no contiene ningún producto",
+      icon: "error",
+      confirmButtonText: "Ok",
+      color: "black",
+    });
   }
   pedidoFinalJSON = JSON.stringify(pedidoFinal);
   totalPedidoJSON = JSON.stringify(totalPedido);
@@ -152,6 +176,7 @@ function confirmPedido() {
 
     //MÉTODO DE PAGO y DESCUENTO
     let paymentOpt = ["efe", "transf", "tarj"];
+    const [EFECTIVO, TRANSFERENCIA, TARJETA] = paymentOpt;
     let valorDescuento;
     let metodoPago;
 
@@ -161,11 +186,11 @@ function confirmPedido() {
           "Elija el método de pago:\n\t•(EFE) - Efectivo\n\t•(TRANSF) - Transferencia\n\t•(TARJ) - Tarjeta de crédito/débito"
         ).toLowerCase();
         let paymentSearch = paymentOpt.find((option) => option === metodoPago);
-        if (paymentSearch === "efe") {
+        if (paymentSearch === EFECTIVO) {
           valorDescuento = 10;
-        } else if (paymentSearch === "transf") {
+        } else if (paymentSearch === TRANSFERENCIA) {
           valorDescuento = 5;
-        } else if (paymentSearch === "tarj") {
+        } else if (paymentSearch === TARJETA) {
           valorDescuento = 0;
         } else {
           alert("El método de pago elegido no es válido. Intente nuevamente.");
@@ -189,7 +214,13 @@ function confirmPedido() {
         ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
     );
   } else {
-    alert("Su pedido aún no contiene ningún producto");
+    Swal.fire({
+      title: "Error!",
+      text: "Su pedido aún no contiene ningún producto",
+      icon: "error",
+      confirmButtonText: "Ok",
+      color: "black",
+    });
   }
 }
 
