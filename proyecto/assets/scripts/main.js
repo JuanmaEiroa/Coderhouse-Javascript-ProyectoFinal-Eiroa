@@ -108,13 +108,23 @@ createCardsBebidas();
 function showPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
   totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
+  let pedidoFinalString = "Su pedido actual es:\n" +
+  pedidoFinal.join("\n") +
+  "\n\nEl costo final es de: $" +
+  totalPedido.toString();
   if (pedidoFinal.length > 0) {
-    alert(
-      "Su pedido actual es:\n" +
-        pedidoFinal.join("\n") +
-        "\n\nEl costo final es de: $" +
-        totalPedido.toString()
-    );
+    Swal.fire({
+      title: "Pedido Actual",
+      html: "Su pedido actual es:<br />" +
+      pedidoFinal.join("<br />") +
+      "<br /><br />El costo final es de: $" +
+      totalPedido.toString(),
+      imageUrl: "../proyecto/assets/images/logoalert.png",
+      imageWidth: 200,
+      imageHeight: 200,
+      confirmButtonText: "Ok",
+      color: "black",
+    });
   } else {
     Swal.fire({
       title: "Error!",
