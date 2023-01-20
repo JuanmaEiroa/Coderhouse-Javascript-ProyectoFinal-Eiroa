@@ -178,92 +178,61 @@ buttonClearPedido.addEventListener("click", function () {
   clearPedido();
 });
 
-//CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL
+//CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL Y DE OPCIONES DE PAGO
 let pedidoConfirmed = false;
 
 function createPaymOpt() {
   let paymentContainer = document.getElementById("paymentContainer");
   let paymentOptions = document.createElement("div");
-  paymentOptions.setAttribute("id","payment");
+  paymentOptions.setAttribute("id", "payment");
   paymentOptions.className = "col-5";
   paymentOptions.innerHTML = `
-          <h2>Elija su método de pago a continuación</h2>
+          <h2>Elija su método de pago</h2>
           <fieldset class="paymentOptions">
-          <input type="radio" name="paymentOption" id="cash">
+          <input type="radio" name="paymentOption" id="cash" value="cash">
           <label for="cash">Efectivo</label>
           <br/>
-          <input type="radio" name="paymentOption" id="transfer">
+          <input type="radio" name="paymentOption" id="transfer" value="transfer">
           <label for="transfer">Transferencia</label>
           <br/>
-          <input type="radio" name="paymentOption" id="creditDebitCard">
+          <input type="radio" name="paymentOption" id="creditDebitCard" value="creditDebitCard">
           <label for="creditDebitCard">Tarjeta de Crédito/Débito</label>
           </fieldset>
     `;
   paymentContainer.appendChild(paymentOptions);
 }
 
+let paymentStarted = false;
 function confirmPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
-  
   if (pedidoFinal.length > 0) {
-    /*alert(
-      "Su pedido ha sido confirmado. Elija su método de pago a continuación.\nEl pago en efectivo tendrá un 10% de descuento en su pedido final.\nEl pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
-    );*/
-    pedidoConfirmed = true;
+    Swal.fire({
+      title: "Pedido Confirmado!",
+      html: "Su pedido ha sido confirmado. Elija su método de pago a continuación.<br/>•El pago en efectivo tendrá un 10% de descuento en su pedido final.<br/>•El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final.",
+      icon: "success",
+      confirmButtonText: "Entendido",
+      color: "black",
+    });
+
+    let pedidoConfirmed = true;
+
     let startPayment = (event) => {
       return new Promise((resolve, reject) => {
         event ? resolve("Pedido confirmado") : reject("Pedido no confirmado");
       });
     };
-    
+
     startPayment(pedidoConfirmed)
       .then((response) => {
         console.log(response);
         createPaymOpt();
+        paymentStarted = true;
       })
       .catch((error) => {
         console.log(error);
       });
-
-    //MÉTODO DE PAGO y DESCUENTO
-    let paymentOpt = ["efe", "transf", "tarj"];
-    const [EFECTIVO, TRANSFERENCIA, TARJETA] = paymentOpt;
-    let valorDescuento;
-    let metodoPago;
-    /*
-    function calcDescuento() {
-      do {
-        metodoPago = prompt(
-          "Elija el método de pago:\n\t•(EFE) - Efectivo\n\t•(TRANSF) - Transferencia\n\t•(TARJ) - Tarjeta de crédito/débito"
-        ).toLowerCase();
-        let paymentSearch = paymentOpt.find((option) => option === metodoPago);
-        if (paymentSearch === EFECTIVO) {
-          valorDescuento = 10;
-        } else if (paymentSearch === TRANSFERENCIA) {
-          valorDescuento = 5;
-        } else if (paymentSearch === TARJETA) {
-          valorDescuento = 0;
-        } else {
-          alert("El método de pago elegido no es válido. Intente nuevamente.");
-        }
-      } while (paymentOpt.includes(metodoPago) === false);
-      totalPedido = parseFloat(
-        totalPedido * (1 - valorDescuento / 100)
-      ).toFixed(2);
-    }
-
-    calcDescuento();
-
-    console.log(
-      "El precio total del pedido con el descuento es de: " +
-        totalPedido.toString()
-    );
-
-    alert(
-      "El precio total de su pedido es de $" +
-        totalPedido.toString() +
-        ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
-    );*/
+    
+      
   } else {
     Swal.fire({
       title: "Error!",
@@ -275,11 +244,58 @@ function confirmPedido() {
   }
 }
 
+//METODO DE PAGO Y DESCUENTO
+
+let valorDescuento;
+function calcDescuento() {
+  if (document.getElementById("cash").checked) {
+    valorDescuento = 10;
+  } else if (document.getElementById("transfer").checked) {
+    valorDescuento = 5;
+  } else {
+    valorDescuento = 0;
+  }
+  totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
+}
+
+function createDiscountPrice(){
+  let paymentContainer = document.getElementById("paymentContainer");
+  let discountDetails = document.createElement("div");
+  discountDetails.setAttribute("id", "discountDetails");
+  discountDetails.className = "col-4";
+  discountDetails.innerHTML = `
+  <h3>Su descuento es de: ${valorDescuento.toString()}%</h3>
+  <br />
+  <p>El precio final de su pedido (con descuento) es de $${totalPedido.toString()}</p>
+  <p>Muchas gracias por su compra!</p>
+  <p>Los Pollos Hermanos</p>
+    `;
+  paymentContainer.appendChild(discountDetails);
+}
+
+function discount() {
+  let getDiscount = (event) => {
+    return new Promise((resolve, reject) => {
+      event
+        ? resolve("Método de pago confirmado")
+        : reject("Método de pago no confirmado");
+    });
+  };
+
+  getDiscount(paymentStarted)
+    .then((response) => {
+      console.log(response);
+      calcDescuento();
+      createDiscountPrice();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 let buttonConfirmPedido = document.getElementById("buttonConfirmPedido");
 buttonConfirmPedido.addEventListener("click", function () {
   confirmPedido();
 });
-
-//METODO DE PAGO ACTUALIZADO CON PROMISE
 
 //Code by Juan Manuel Eiroa :)
