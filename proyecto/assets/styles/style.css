@@ -105,3 +105,21 @@ nav {
   margin: 1% 15%;
   font-size: 150%;
 }
+
+/*FIN CSS BOTONES PEDIDO*/
+/*-----------------------------------------------*/
+/*INICIO CSS MÉTODO DE PAGO*/
+
+.paymentOptions {
+  border: dashed 2px black;
+  text-align: center;
+  font-size: 150%;
+  margin-bottom: 5%;
+}
+
+#payment {
+  margin: 0 auto;
+  text-align: center;
+}
+
+/*FIN CSS MÉTODO DE PAGO*/

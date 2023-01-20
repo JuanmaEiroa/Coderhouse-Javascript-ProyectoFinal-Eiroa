@@ -108,17 +108,19 @@ createCardsBebidas();
 function showPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
   totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
-  let pedidoFinalString = "Su pedido actual es:\n" +
-  pedidoFinal.join("\n") +
-  "\n\nEl costo final es de: $" +
-  totalPedido.toString();
+  let pedidoFinalString =
+    "Su pedido actual es:\n" +
+    pedidoFinal.join("\n") +
+    "\n\nEl costo final es de: $" +
+    totalPedido.toString();
   if (pedidoFinal.length > 0) {
     Swal.fire({
       title: "Pedido Actual",
-      html: "Su pedido actual es:<br />" +
-      pedidoFinal.join("<br />") +
-      "<br /><br />El costo final es de: $" +
-      totalPedido.toString(),
+      html:
+        "<u><b>Su pedido actual es:</u></b><br />" +
+        pedidoFinal.join("<br />") +
+        "<br /><br />El costo final es de: $" +
+        totalPedido.toString(),
       imageUrl: "../proyecto/assets/images/logoalert.png",
       imageWidth: 200,
       imageHeight: 200,
@@ -177,19 +179,58 @@ buttonClearPedido.addEventListener("click", function () {
 });
 
 //CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL
+let pedidoConfirmed = false;
+
+function createPaymOpt() {
+  let paymentContainer = document.getElementById("paymentContainer");
+  let paymentOptions = document.createElement("div");
+  paymentOptions.setAttribute("id","payment");
+  paymentOptions.className = "col-5";
+  paymentOptions.innerHTML = `
+          <h2>Elija su método de pago a continuación</h2>
+          <fieldset class="paymentOptions">
+          <input type="radio" name="paymentOption" id="cash">
+          <label for="cash">Efectivo</label>
+          <br/>
+          <input type="radio" name="paymentOption" id="transfer">
+          <label for="transfer">Transferencia</label>
+          <br/>
+          <input type="radio" name="paymentOption" id="creditDebitCard">
+          <label for="creditDebitCard">Tarjeta de Crédito/Débito</label>
+          </fieldset>
+    `;
+  paymentContainer.appendChild(paymentOptions);
+}
+
 function confirmPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
+  
   if (pedidoFinal.length > 0) {
-    alert(
+    /*alert(
       "Su pedido ha sido confirmado. Elija su método de pago a continuación.\nEl pago en efectivo tendrá un 10% de descuento en su pedido final.\nEl pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final."
-    );
+    );*/
+    pedidoConfirmed = true;
+    let startPayment = (event) => {
+      return new Promise((resolve, reject) => {
+        event ? resolve("Pedido confirmado") : reject("Pedido no confirmado");
+      });
+    };
+    
+    startPayment(pedidoConfirmed)
+      .then((response) => {
+        console.log(response);
+        createPaymOpt();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     //MÉTODO DE PAGO y DESCUENTO
     let paymentOpt = ["efe", "transf", "tarj"];
     const [EFECTIVO, TRANSFERENCIA, TARJETA] = paymentOpt;
     let valorDescuento;
     let metodoPago;
-
+    /*
     function calcDescuento() {
       do {
         metodoPago = prompt(
@@ -222,7 +263,7 @@ function confirmPedido() {
       "El precio total de su pedido es de $" +
         totalPedido.toString() +
         ".\nMuchas gracias por su compra!\n\nLos Pollos Hermanos"
-    );
+    );*/
   } else {
     Swal.fire({
       title: "Error!",
@@ -238,5 +279,7 @@ let buttonConfirmPedido = document.getElementById("buttonConfirmPedido");
 buttonConfirmPedido.addEventListener("click", function () {
   confirmPedido();
 });
+
+//METODO DE PAGO ACTUALIZADO CON PROMISE
 
 //Code by Juan Manuel Eiroa :)
