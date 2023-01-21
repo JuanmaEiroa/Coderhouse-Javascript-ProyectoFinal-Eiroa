@@ -1,14 +1,15 @@
 //CREACIÓN DE VARIABLES PARA PEDIDO Y TOTAL, CON ALMACENAMIENTO EN STORAGE
 let pedidoFinal = [];
+let subtotalPedido;
 let totalPedido = 0;
 let pedidoFinalJSON;
-let totalPedidoJSON;
+let subtotalPedidoJSON;
 
 //DECLARACIÓN DE FUNCIÓN PARA AGREGAR ITEM A PEDIDO
 function addToPedido(menuType, id) {
   let menuSearch = menuType.find((element) => element.id === id);
   pedidoFinal.push(menuSearch.nombre);
-  totalPedido += menuSearch.precio;
+  subtotalPedido += menuSearch.precio;
   Toastify({
     text: "El producto se agregó a tu pedido!",
     style: {
@@ -16,9 +17,9 @@ function addToPedido(menuType, id) {
     },
   }).showToast();
   pedidoFinalJSON = JSON.stringify(pedidoFinal);
-  totalPedidoJSON = JSON.stringify(totalPedido);
+  subtotalPedidoJSON = JSON.stringify(subtotalPedido);
   sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
-  sessionStorage.setItem("totalPedido", totalPedidoJSON);
+  sessionStorage.setItem("subtotalPedido", subtotalPedidoJSON);
 }
 
 //DECLARACIÓN Y LLAMADO DE FUNCIONES PARA CREACIÓN DE CARDS CON EL MENÚ
@@ -107,35 +108,28 @@ createCardsBebidas();
 //CREACIÓN DE BOTÓN Y FUNCIÓN PARA VER PEDIDO ACTUAL
 function showPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
-  totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
-  let pedidoFinalString =
-    "Su pedido actual es:\n" +
-    pedidoFinal.join("\n") +
-    "\n\nEl costo final es de: $" +
-    totalPedido.toString();
-  if (pedidoFinal.length > 0) {
-    Swal.fire({
-      title: "Pedido Actual",
-      html:
-        "<u><b>Su pedido actual es:</u></b><br />" +
-        pedidoFinal.join("<br />") +
-        "<br /><br />El costo final es de: $" +
-        totalPedido.toString(),
-      imageUrl: "../proyecto/assets/images/logoalert.png",
-      imageWidth: 200,
-      imageHeight: 200,
-      confirmButtonText: "Ok",
-      color: "black",
-    });
-  } else {
-    Swal.fire({
-      title: "Error!",
-      text: "Su pedido aún no contiene ningún producto",
-      icon: "error",
-      confirmButtonText: "Ok",
-      color: "black",
-    });
-  }
+  subtotalPedido = JSON.parse(sessionStorage.getItem("subtotalPedido"));
+  pedidoFinal.length > 0
+    ? Swal.fire({
+        title: "Pedido Actual",
+        html:
+          "<u><b>Su pedido actual es:</u></b><br />" +
+          pedidoFinal.join("<br />") +
+          "<br /><br />El costo final es de: $" +
+          subtotalPedido.toString(),
+        imageUrl: "../proyecto/assets/images/logoalert.png",
+        imageWidth: 200,
+        imageHeight: 200,
+        confirmButtonText: "Ok",
+        color: "black",
+      })
+    : Swal.fire({
+        title: "Error!",
+        text: "Su pedido aún no contiene ningún producto",
+        icon: "error",
+        confirmButtonText: "Ok",
+        color: "black",
+      });
 }
 
 let buttonVerPedido = document.getElementById("buttonVerPedido");
@@ -146,10 +140,10 @@ buttonVerPedido.addEventListener("click", function () {
 //CREACIÓN DE BOTÓN PARA LIMPIAR PEDIDO ACTUAL
 function clearPedido() {
   pedidoFinal = JSON.parse(sessionStorage.getItem("pedidoFinal"));
-  totalPedido = JSON.parse(sessionStorage.getItem("totalPedido"));
+  subtotalPedido = JSON.parse(sessionStorage.getItem("subtotalPedido"));
   if (pedidoFinal.length > 0) {
     pedidoFinal.splice(0, pedidoFinal.length);
-    totalPedido = 0;
+    subtotalPedido = 0;
     Swal.fire({
       title: "Pedido vaciado!",
       text: "Su pedido ha sido vaciado",
@@ -168,9 +162,9 @@ function clearPedido() {
     });
   }
   pedidoFinalJSON = JSON.stringify(pedidoFinal);
-  totalPedidoJSON = JSON.stringify(totalPedido);
+  subtotalPedidoJSON = JSON.stringify(subtotalPedido);
   sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
-  sessionStorage.setItem("totalPedido", totalPedidoJSON);
+  sessionStorage.setItem("subtotalPedido", subtotalPedidoJSON);
 }
 
 let buttonClearPedido = document.getElementById("buttonClearPedido");
@@ -180,13 +174,19 @@ buttonClearPedido.addEventListener("click", function () {
 
 //CREACIÓN DE BOTÓN PARA CONFIRMAR PEDIDO ACTUAL Y DE OPCIONES DE PAGO
 let pedidoConfirmed = false;
+let paymentOptionsExist = false;
+let discountDetailsExist = false;
 
 function createPaymOpt() {
   let paymentContainer = document.getElementById("paymentContainer");
-  let paymentOptions = document.createElement("div");
-  paymentOptions.setAttribute("id", "payment");
-  paymentOptions.className = "col-5";
-  paymentOptions.innerHTML = `
+  if (paymentOptionsExist) {
+    paymentContainer.removeChild(paymentOptions);
+    paymentOptionsExist = false;
+  } else {
+    let paymentOptions = document.createElement("div");
+    paymentOptions.setAttribute("id", "payment");
+    paymentOptions.className = "col-5";
+    paymentOptions.innerHTML = `
           <h2>Elija su método de pago</h2>
           <fieldset class="paymentOptions">
           <input type="radio" name="paymentOption" id="cash" value="cash">
@@ -197,9 +197,13 @@ function createPaymOpt() {
           <br/>
           <input type="radio" name="paymentOption" id="creditDebitCard" value="creditDebitCard">
           <label for="creditDebitCard">Tarjeta de Crédito/Débito</label>
+          <br/>
+          <button type="button" class="btn btn-success" id="buttonConfirmPago">Confirmar método de pago</button>
           </fieldset>
     `;
-  paymentContainer.appendChild(paymentOptions);
+    paymentContainer.appendChild(paymentOptions);
+    paymentOptionsExist = true;
+  }
 }
 
 let paymentStarted = false;
@@ -208,7 +212,7 @@ function confirmPedido() {
   if (pedidoFinal.length > 0) {
     Swal.fire({
       title: "Pedido Confirmado!",
-      html: "Su pedido ha sido confirmado. Elija su método de pago a continuación.<br/>•El pago en efectivo tendrá un 10% de descuento en su pedido final.<br/>•El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final.",
+      html: "Su pedido ha sido confirmado. Elija su método de pago a continuación.<br/><br/>•El pago en efectivo tendrá un 10% de descuento en su pedido final.<br/>•El pago mediante transferencia bancaria tendrá un 5% de descuento en su pedido final.",
       icon: "success",
       confirmButtonText: "Entendido",
       color: "black",
@@ -227,12 +231,11 @@ function confirmPedido() {
         console.log(response);
         createPaymOpt();
         paymentStarted = true;
+        startDiscount();
       })
       .catch((error) => {
         console.log(error);
       });
-    
-      
   } else {
     Swal.fire({
       title: "Error!",
@@ -247,30 +250,44 @@ function confirmPedido() {
 //METODO DE PAGO Y DESCUENTO
 
 let valorDescuento;
+
 function calcDescuento() {
-  if (document.getElementById("cash").checked) {
-    valorDescuento = 10;
-  } else if (document.getElementById("transfer").checked) {
-    valorDescuento = 5;
-  } else {
-    valorDescuento = 0;
+  let methodSelected = document.querySelectorAll("input[name='paymentOption']");
+  for (const method of methodSelected) {
+    if (method.checked) {
+      if (document.getElementById("cash").checked) {
+        valorDescuento = 10;
+      } else if (document.getElementById("transfer").checked) {
+        valorDescuento = 5;
+      } else {
+        valorDescuento = 0;
+      }
+      totalPedido = parseFloat(
+        subtotalPedido * (1 - valorDescuento / 100)
+      ).toFixed(2);
+    }
   }
-  totalPedido = parseFloat(totalPedido * (1 - valorDescuento / 100)).toFixed(2);
 }
 
-function createDiscountPrice(){
+function createDiscountPrice() {
   let paymentContainer = document.getElementById("paymentContainer");
-  let discountDetails = document.createElement("div");
-  discountDetails.setAttribute("id", "discountDetails");
-  discountDetails.className = "col-4";
-  discountDetails.innerHTML = `
+  if (discountDetailsExist) {
+    paymentContainer.removeChild(discountDetails);
+    discountDetailsExist = false;
+  } else {
+    let discountDetails = document.createElement("div");
+    discountDetails.setAttribute("id", "discountDetails");
+    discountDetails.className = "col-4";
+    discountDetails.innerHTML = `
   <h3>Su descuento es de: ${valorDescuento.toString()}%</h3>
   <br />
   <p>El precio final de su pedido (con descuento) es de $${totalPedido.toString()}</p>
   <p>Muchas gracias por su compra!</p>
   <p>Los Pollos Hermanos</p>
     `;
-  paymentContainer.appendChild(discountDetails);
+    paymentContainer.appendChild(discountDetails);
+    discountDetailsExist = true;
+  }
 }
 
 function discount() {
@@ -291,6 +308,13 @@ function discount() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function startDiscount() {
+  let buttonConfirmPago = document.getElementById("buttonConfirmPago");
+  buttonConfirmPago.addEventListener("click", function () {
+    discount();
+  });
 }
 
 let buttonConfirmPedido = document.getElementById("buttonConfirmPedido");
