@@ -290,8 +290,8 @@ function createDiscountPrice() {
   }
 }
 
-function discount() {
-  let getDiscount = (event) => {
+async function discount() {
+  let getDiscount = async (event) => {
     return new Promise((resolve, reject) => {
       event
         ? resolve("Método de pago confirmado")
@@ -299,15 +299,14 @@ function discount() {
     });
   };
 
-  getDiscount(paymentStarted)
-    .then((response) => {
-      console.log(response);
-      calcDescuento();
-      createDiscountPrice();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  try {
+    let response = await getDiscount(paymentStarted);
+    console.log(response);
+    await calcDescuento();
+    await createDiscountPrice();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function startDiscount() {
