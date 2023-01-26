@@ -319,14 +319,13 @@ async function getPaymentMethods() {
   let selectPaymentMethod = document.getElementById("paymentOptions");
   let paymentMethodsList = "assets/scripts/json/methods.json";
   await fetch(paymentMethodsList)
-    .then((response) => {
-      response.json;
-    })
+    .then((response) => response.json())
     .then((methods) => {
       methods.forEach((method) => {
         selectPaymentMethod.innerHTML += `
-          <input type="radio" name="paymentOption" id="cash" value="cash">
-          <label for="cash">${method.nombre} - Descuento: ${method.descuento}</label>
+          <input type="radio" name="paymentOption" id="${method.id}" value="cash">
+          <label for="cash">${method.nombre} - Descuento: ${method.descuento}%</label>
+          <br/>
           `;
       });
     })
