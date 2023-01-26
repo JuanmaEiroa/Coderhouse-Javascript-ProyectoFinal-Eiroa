@@ -1,0 +1,5 @@
+[
+    {"nombre":"Efectivo", "descuento":10, "id":"EFE"},
+    {"nombre":"Transferencia", "descuento":10, "id":"TRANSF"},
+    {"nombre":"Tarjeta de Crédito/Débito", "descuento":0, "id":"TARJ"}
+]

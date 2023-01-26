@@ -189,20 +189,14 @@ function createPaymOpt() {
     paymentOptions.innerHTML = `
           <h2>Elija su método de pago</h2>
           <fieldset class="paymentOptions">
-          <input type="radio" name="paymentOption" id="cash" value="cash">
-          <label for="cash">Efectivo</label>
-          <br/>
-          <input type="radio" name="paymentOption" id="transfer" value="transfer">
-          <label for="transfer">Transferencia</label>
-          <br/>
-          <input type="radio" name="paymentOption" id="creditDebitCard" value="creditDebitCard">
-          <label for="creditDebitCard">Tarjeta de Crédito/Débito</label>
-          <br/>
+          <div id="paymentOptions">
+          </div>
           <button type="button" class="btn btn-success" id="buttonConfirmPago">Confirmar método de pago</button>
           </fieldset>
     `;
     paymentContainer.appendChild(paymentOptions);
     paymentOptionsExist = true;
+    getPaymentMethods();
   }
 }
 
@@ -320,5 +314,24 @@ let buttonConfirmPedido = document.getElementById("buttonConfirmPedido");
 buttonConfirmPedido.addEventListener("click", function () {
   confirmPedido();
 });
+
+async function getPaymentMethods() {
+  let selectPaymentMethod = document.getElementById("paymentOptions");
+  let paymentMethodsList = "assets/scripts/json/methods.json";
+  await fetch(paymentMethodsList)
+    .then((response) => {
+      response.json;
+    })
+    .then((methods) => {
+      methods.forEach((method) => {
+        selectPaymentMethod.innerHTML += `
+          <input type="radio" name="paymentOption" id="cash" value="cash">
+          <label for="cash">${method.nombre} - Descuento: ${method.descuento}</label>
+          `;
+      });
+    })
+    .catch((err) => console.log(err))
+    .finally(() => console.log("Métodos de pago cargados a aplicación"));
+}
 
 //Code by Juan Manuel Eiroa :)
