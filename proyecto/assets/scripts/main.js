@@ -1,9 +1,11 @@
 //CREACIÓN DE VARIABLES PARA PEDIDO Y TOTAL, CON ALMACENAMIENTO EN STORAGE
 let pedidoFinal = [];
-let subtotalPedido;
+let subtotalPedido = 0;
 let totalPedido = 0;
-let pedidoFinalJSON;
-let subtotalPedidoJSON;
+let pedidoFinalJSON = JSON.stringify(pedidoFinal);
+sessionStorage.setItem("pedidoFinal", pedidoFinalJSON);
+let subtotalPedidoJSON = JSON.stringify(subtotalPedido);
+sessionStorage.setItem("subtotalPedido", subtotalPedidoJSON);
 
 //DECLARACIÓN DE FUNCIÓN PARA AGREGAR ITEM A PEDIDO
 function addToPedido(menuType, id) {
@@ -222,13 +224,12 @@ function confirmPedido() {
 
     startPayment(pedidoConfirmed)
       .then((response) => {
-        console.log(response);
         createPaymOpt();
         paymentStarted = true;
         startDiscount();
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
   } else {
     Swal.fire({
@@ -295,11 +296,10 @@ async function discount() {
 
   try {
     let response = await getDiscount(paymentStarted);
-    console.log(response);
     await calcDescuento();
     await createDiscountPrice();
   } catch (error) {
-    console.log(error);
+    alert(error);
   }
 }
 
@@ -329,8 +329,7 @@ async function getPaymentMethods() {
           `;
       });
     })
-    .catch((err) => console.log(err))
-    .finally(() => console.log("Métodos de pago cargados a aplicación"));
+    .catch((err) => alert(err));
 }
 
 //Code by Juan Manuel Eiroa :)
